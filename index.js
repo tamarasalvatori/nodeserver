@@ -61,19 +61,28 @@ app.put ('/api/produtos/:id', (req, res, next) => {
         marca,
     }
 
-    lista_produtos.produtos[idx] = updatedItem
-
-    return res.json(lista_produtos)
-    res.status(201).json({ message: 'Produto atualizado com sucesso!' })
+    try {
+        lista_produtos.produtos[idx] = updatedItem
+        return res.json(lista_produtos)
+        res.status(201).json({ message: 'Produto atualizado com sucesso!' })
+    } catch {
+        res.status(500).json({erro: error})    
+    }
 })
 
 app.delete ('/api/produtos/:id', (req, res, next) => {
     let id = parseInt (req.params.id)
     let idx = lista_produtos.produtos.findIndex (elem => elem.id === id)
 
+    try {
+        lista_produtos.produtos.splice(idx, 1)
+        return res.json(lista_produtos)
+        res.status(201).json({ message: 'Produto deletado!' })
 
-    
-    res.json( { message: 'A implementar' } )
+    } catch {
+        res.status(500).json({erro: error})    
+    }
+
 })
 
 const PORTA = process.env.PORT || 3000
