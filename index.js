@@ -11,6 +11,8 @@ const lista_produtos = {
     ]
 }
 
+const Product = require('./models/Product')
+
 app.use (express.urlencoded({extended: true})) //processa o body em formato URLEnconded
 app.use (express.json()) //Processa o body em formato JSON
 
@@ -37,7 +39,23 @@ app.get ('/api/produtos/:id', (req, res, next) => {
 })
 
 app.post ('/api/produtos', (req, res, next) => {
-    res.json( { message: 'A implementar' } )
+    const { id, descricao, valor, marca } = req.body
+
+    const product = {
+        id,
+        descricao,
+        valor,
+        marca,
+    }
+
+    try {
+        await Product.create(product)
+        res.status(201).json({ message: 'Produto inserido na lista com sucesso!' })
+    } catch {
+        res.status(500).json({erro: error})    
+    }
+
+    //res.json( { message: 'A implementar' } )
 })
 
 app.put ('/api/produtos/:id', (req, res, next) => {
