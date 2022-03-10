@@ -11,7 +11,7 @@ const lista_produtos = {
     ]
 }
 
-const Product = require('./models/Product')
+//const Product = require('./models/Product')
 
 app.use (express.urlencoded({extended: true})) //processa o body em formato URLEnconded
 app.use (express.json()) //Processa o body em formato JSON
@@ -35,30 +35,27 @@ app.get ('/api/produtos/:id', (req, res, next) => {
     } else {
         res.status(404).json( { message: 'Produto não encontrado' } )
     }
-
 })
 
-app.post ('/api/produtos', (req, res, next) => {
+app.post ('/api/produtos/', (req, res, next) => {
     const { id, descricao, valor, marca } = req.body
 
-    const product = {
-        id,
-        descricao,
-        valor,
-        marca,
-    }
+    lista_produtos.push(id, descricao, valor, marca)
 
-    try {
-        await Product.create(product)
-        res.status(201).json({ message: 'Produto inserido na lista com sucesso!' })
-    } catch {
-        res.status(500).json({erro: error})    
-    }
+    return res.json(lista_produtos)
+
+    // try {
+    //     await Product.create(product)
+    //     res.status(201).json({ message: 'Produto inserido na lista com sucesso!' })
+    // } catch {
+    //     res.status(500).json({erro: error})    
+    // }
 
     //res.json( { message: 'A implementar' } )
 })
 
 app.put ('/api/produtos/:id', (req, res, next) => {
+
     res.json( { message: 'A implementar' } )
 })
 
