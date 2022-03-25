@@ -57,6 +57,9 @@ routerAPI.put ('/produtos/:id', (req, res, next) => {
      knex('produto')
         .where({ id: req.params.id })
         .update({ descricao: req.body.descricao, valor: req.body.valor, marca: req.body.marca })
+        .then ( result => {
+            res.status(201).json({ message: 'Produto atualizado com sucesso'})
+        })
 })
 
 routerAPI.delete ('/produtos/:id', (req, res, next) => {
