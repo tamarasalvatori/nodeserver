@@ -26,18 +26,21 @@ routerAPI.get ('/produtos', (req, res, next) => {
       .then (produtos => {
           res.status(200).json(produtos);
       })  
-    //res.json(lista_produtos)
 })
 
 routerAPI.get ('/produtos/:id', (req, res, next) => {
-    let id = parseInt (req.params.id)
-    let idx = lista_produtos.produtos.findIndex (elem => elem.id === id)
 
-    if (idx != -1) {
-        res.status(200).json(lista_produtos.produtos[idx])
-    } else {
-        res.status(404).json( { message: 'Produto não encontrado' } )
-    }
+    knex.select('*')
+      .from ('produto')
+      .where ({ id: req.params.id})
+      .then (produtos => {
+          if (produtos.length) {
+            res.status(200).json(produtos);
+        }
+        else {
+            res.status(404).json( { message: 'Produto não encontrado' });
+        }
+    }) 
 })
 
 routerAPI.post ('/produtos/', (req, res, next) => {
@@ -75,17 +78,20 @@ routerAPI.put ('/produtos/:id', (req, res, next) => {
 })
 
 routerAPI.delete ('/produtos/:id', (req, res, next) => {
-    let id = parseInt (req.params.id)
-    let idx = lista_produtos.produtos.findIndex (elem => elem.id === id)
-
-    try {
-        lista_produtos.produtos.splice(idx, 1)
-        return res.json(lista_produtos)
-        res.status(201).json({ message: 'Produto deletado!' })
-
-    } catch {
-        res.status(500).json({erro: error})    
-    }
+    knex('produto')
+        .where ({ id: req.params.id})
+        .del()
+        .then (n => {
+            if (n) {
+                res.status(200).json( { message: 'Produto excluído com sucesso'});
+            }
+            else {
+                res.status(404).json( { message: 'Produto não encontrado' });
+            }
+        })
+        .catch (err => {
+            res.status(500).json({ message: 'Erro na exclusão \n Mensagem: ' + err.message })
+        })
 })
 
 module.exports = routerAPI
