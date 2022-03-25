@@ -45,7 +45,8 @@ routerAPI.get ('/produtos/:id', (req, res, next) => {
 
 routerAPI.post ('/produtos/', (req, res, next) => {
     knex('produto')
-        .insert ({ descricao: req.body.descricao, valor: req.body.valor, marca: req.body.marca})
+        .insert ({ descricao: req.body.descricao, valor: req.body.valor, marca: req.body.marca},
+            ['id'])
         .then ( result => {
             res.status(201).json({ message: 'Produto inserido com sucesso'})
         })
@@ -53,25 +54,9 @@ routerAPI.post ('/produtos/', (req, res, next) => {
 })
 
 routerAPI.put ('/produtos/:id', (req, res, next) => {
-    let id = parseInt (req.params.id)
-    let idx = lista_produtos.produtos.findIndex (elem => elem.id === id)
-
-    const { descricao, valor, marca } = req.body
-
-    const updatedItem = {
-        id,
-        descricao,
-        valor,
-        marca,
-    }
-
-    try {
-        lista_produtos.produtos[idx] = updatedItem
-        return res.json(lista_produtos)
-        res.status(201).json({ message: 'Produto atualizado com sucesso!' })
-    } catch {
-        res.status(500).json({erro: error})    
-    }
+     knex('produto')
+        .where({ id: req.params.id })
+        .update({ descricao: req.body.descricao, valor: req.body.valor, marca: req.body.marca })
 })
 
 routerAPI.delete ('/produtos/:id', (req, res, next) => {
