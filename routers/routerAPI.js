@@ -1,5 +1,5 @@
 const express = require ('express')
-const app = express.Router()
+const routerAPI = express.Router()
 
 const lista_produtos = 
 {produtos:       
@@ -74,3 +74,5 @@ routerAPI.delete ('/produtos/:id', (req, res, next) => {
         res.status(500).json({erro: error})    
     }
 })
+
+module.exports = routerAPI
