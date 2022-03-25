@@ -12,8 +12,21 @@ const lista_produtos =
     ]
 }
 
+const knex = require ('knex') ({
+    client: 'pg',
+    connection: {
+        connectionString : process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }, 
+        }
+})
+
 routerAPI.get ('/produtos', (req, res, next) => {
-    res.json(lista_produtos)
+    knex.select('*')
+      .from ('produto')
+      .then (produtos => {
+          res.status(200).json(produtos);
+      })  
+    //res.json(lista_produtos)
 })
 
 routerAPI.get ('/produtos/:id', (req, res, next) => {
