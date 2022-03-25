@@ -44,15 +44,12 @@ routerAPI.get ('/produtos/:id', (req, res, next) => {
 })
 
 routerAPI.post ('/produtos/', (req, res, next) => {
-    const { id, descricao, valor, marca } = req.body
+    knex('produto')
+        .insert ({ descricao: req.body.descricao, valor: req.body.valor, marca: req.body.marca})
+        .then ( result => {
+            res.status(201).json({ message: 'Produto inserido com sucesso'})
+        })
 
-    try {
-        lista_produtos.produtos.push({ id, descricao, valor, marca})
-        return res.json(lista_produtos)
-        res.status(201).json({ message: 'Produto inserido na lista com sucesso!' })
-    } catch {
-        res.status(500).json({erro: error})    
-    }
 })
 
 routerAPI.put ('/produtos/:id', (req, res, next) => {
