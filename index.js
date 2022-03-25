@@ -2,6 +2,8 @@ require('dotenv').config()
 const express = require ('express')
 
 const routerAPI = require ('./routers/routerAPI')
+const routerSec = require ('./routers/routerSec')
+
 const app = express ()
 
 app.use (express.urlencoded({extended: true})) 
@@ -14,6 +16,7 @@ app.use ((req, res, next) => {
 })
 
 app.use ('/app', express.static('public', { index: false, cacheControl: 'public' }))
+app.use ('/seguranca/', routerSec)
 app.use ('/api', routerAPI)
 
 const PORTA = process.env.PORT || 3000

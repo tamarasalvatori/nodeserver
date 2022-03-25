@@ -1,5 +1,6 @@
 const express = require ('express')
 const routerAPI = express.Router()
+const utilSec = require('../utils/utilSec')
 
 const lista_produtos = 
 {produtos:       
@@ -20,7 +21,11 @@ const knex = require ('knex') ({
         }
 })
 
-routerAPI.get ('/produtos', (req, res, next) => {
+routerAPI.get ('/produtos/info', (req, res, next) => {
+    res.status(200).json({message: 'Bem-vinde à API de Produtos'})
+})
+
+routerAPI.get ('/produtos', utilSec.checkToken, (req, res, next) => {
     knex.select('*')
       .from ('produto')
       .then (produtos => {
@@ -28,7 +33,7 @@ routerAPI.get ('/produtos', (req, res, next) => {
       })  
 })
 
-routerAPI.get ('/produtos/:id', (req, res, next) => {
+routerAPI.get ('/produtos/:id', utilSec.checkToken, (req, res, next) => {
 
     knex.select('*')
       .from ('produto')
@@ -43,7 +48,7 @@ routerAPI.get ('/produtos/:id', (req, res, next) => {
     }) 
 })
 
-routerAPI.post ('/produtos/', (req, res, next) => {
+routerAPI.post ('/produtos/', utilSec.checkToken, utilSec.isAdmin, (req, res, next) => {
     knex('produto')
         .insert ({ descricao: req.body.descricao, valor: req.body.valor, marca: req.body.marca},
             ['id'])
@@ -53,7 +58,7 @@ routerAPI.post ('/produtos/', (req, res, next) => {
 
 })
 
-routerAPI.put ('/produtos/:id', (req, res, next) => {
+routerAPI.put ('/produtos/:id', utilSec.checkToken, utilSec.isAdmin, (req, res, next) => {
      knex('produto')
         .where({ id: req.params.id })
         .update({ descricao: req.body.descricao, valor: req.body.valor, marca: req.body.marca })
@@ -62,7 +67,7 @@ routerAPI.put ('/produtos/:id', (req, res, next) => {
         })
 })
 
-routerAPI.delete ('/produtos/:id', (req, res, next) => {
+routerAPI.delete ('/produtos/:id', utilSec.checkToken, utilSec.isAdmin, (req, res, next) => {
     knex('produto')
         .where ({ id: req.params.id})
         .del()
